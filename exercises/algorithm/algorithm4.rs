@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -51,12 +50,23 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
+        if let Some(ref mut root) = self.root {
+            root.insert(value);
+        } else {
+            self.root = Some(Box::new(TreeNode::new(value)));
+        }
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
         //TODO
-        true
+        // if let Some(ref root) = self.root {
+        //     root.search(value)
+        // } else {
+        //     false
+        // }
+
+        self.root.as_ref().map_or(false, |root| root.search(value))
     }
 }
 
@@ -67,6 +77,74 @@ where
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
         //TODO
+        // if value < self.value {
+        //     // if let Some(ref mut left_node) = self.left {
+        //     //     left_node.insert(value);
+        //     // } else {
+        //     //     self.left = Some(Box::new(TreeNode::new(value)));
+        //     // }
+        //     match self.left {
+        //         Some(ref mut left_node) => left_node.insert(value),
+        //         None => self.left = Some(Box::new(TreeNode::new(value))),
+        //     }
+        // } else if value > self.value {
+        //     // if let Some(ref mut right_node) = self.right {
+        //     //     right_node.insert(value);
+        //     // } else {
+        //     //     self.right = Some(Box::new(TreeNode::new(value)));
+        //     // }
+        //     match self.right {
+        //         Some(ref mut right_node) => right_node.insert(value),
+        //         None => self.right = Some(Box::new(TreeNode::new(value))),
+        //     }
+        // }
+
+        match value.cmp(&self.value) {
+            Ordering::Less => {
+                if let Some(left) = &mut self.left {
+                    left.insert(value);
+                } else {
+                    self.left = Some(Box::new(TreeNode::new(value)));
+                }
+            }
+            Ordering::Greater => {
+                if let Some(right) = &mut self.right {
+                    right.insert(value);
+                } else {
+                    self.right = Some(Box::new(TreeNode::new(value)));
+                }
+            }
+            Ordering::Equal => {
+                // Handle duplicate values (optional)
+            }
+        }
+    }
+
+    // Search for a value in the tree
+    fn search(&self, value: T) -> bool {
+        // match value.cmp(&self.value) {
+        //     Ordering::Less => {
+        //         if let Some(ref left) = self.left {
+        //             left.search(value)
+        //         } else {
+        //             false
+        //         }
+        //     }
+        //     Ordering::Equal => true,
+        //     Ordering::Greater => {
+        //         if let Some(ref right) = self.right {
+        //             right.search(value)
+        //         } else {
+        //             false
+        //         }
+        //     }
+        // }
+
+        match value.cmp(&self.value) {
+            Ordering::Less => self.left.as_ref().map_or(false, |left| left.search(value)),
+            Ordering::Greater => self.right.as_ref().map_or(false, |right| right.search(value)),
+            Ordering::Equal => true,
+        }
     }
 }
 
