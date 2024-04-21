@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -38,6 +37,9 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push(value);
+        self.count += 1;
+        self.heapify_up(self.len());
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +60,44 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+		let left_child_idx = self.left_child_idx(idx);
+        let right_child_idx = self.right_child_idx(idx);
+
+        if right_child_idx > self.len() || (self.comparator)(&self.items[left_child_idx], &self.items[right_child_idx]) {
+            left_child_idx
+        } else {
+            right_child_idx
+        }
+    }
+
+    // fn heapify_up(&mut self, mut idx: usize) {
+    //     while idx > 1 && (self.comparator)(&self.items[idx], &self.items[self.parent_idx(idx)]) {
+    //         self.items.swap(idx, self.parent_idx(idx));
+    //         idx = self.parent_idx(idx);
+    //     }
+    // }
+    fn heapify_up(&mut self, mut idx: usize) {
+        while idx > 1 {
+            let parent_idx = self.parent_idx(idx);
+            if (self.comparator)(&self.items[idx], &self.items[parent_idx]) {
+                self.items.swap(idx, parent_idx);
+                idx = parent_idx;
+            } else {
+                break;
+            }
+        }
+    }
+
+    fn heapify_down(&mut self, mut idx: usize) {
+        while self.children_present(idx) {
+            let smallest_child_idx = self.smallest_child_idx(idx);
+            if (self.comparator)(&self.items[smallest_child_idx], &self.items[idx]) {
+                self.items.swap(smallest_child_idx, idx);
+                idx = smallest_child_idx;
+            } else {
+                break;
+            }
+        }
     }
 }
 
@@ -85,7 +124,19 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+		if self.is_empty() {
+            None
+        } else {
+            let root_item = self.items.swap_remove(1); // 移除根节点
+            self.count -= 1;
+            if !self.is_empty() {
+                // 如果堆不为空
+                let last_item = self.items.pop().unwrap(); // 移除最后一个元素
+                self.items.insert(1, last_item); // 将最后一个元素放在堆的根节点处
+                self.heapify_down(1); // 重新调整堆
+            }
+            Some(root_item)
+        }
     }
 }
 
