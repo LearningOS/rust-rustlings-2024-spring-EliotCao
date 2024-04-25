@@ -53,6 +53,7 @@ pub trait Graph {
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
         // Implementation will be provided in the structs implementing this trait
+        // Trait defeault implementation may be provided!!!
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
